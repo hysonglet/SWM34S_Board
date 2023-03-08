@@ -1,0 +1,22 @@
+{
+	"name": "SWM34S_Board",
+	"version": "1.0.0",
+	"description": "Provide the official demo motherboard (SWDM_LQ64_34SRE05 Ver5 2020.03.30) support package of synwit",
+	"keywords": "synwit, SWM34",
+	"repository":
+	{
+		"type": "git",
+		"url": "https://github.com/hysonglet/SWM34S_Board.git"
+	},
+	"authors":
+	[
+		{
+			"name": "Hysonglet",
+			"email": "hysonglet@qq.com",
+			"url": "https://github.com/hysonglet"
+		}
+	],
+	"license": "MIT",
+	"frameworks": "*",
+	"platforms": "*"
+}
