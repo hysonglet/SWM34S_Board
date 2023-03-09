@@ -3,6 +3,7 @@
 #define _SYNWIT_BOARD_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,6 +19,8 @@ void led_init(void);
 void led_turn(void);
 void led_on(void);
 void led_off(void);
+void key_init(void);
+bool key_is_push(void);
 void uart0_init(void);
 
 

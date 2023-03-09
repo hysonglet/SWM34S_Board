@@ -20,6 +20,9 @@ void delay_ms(uint32_t ms)
 
 #define LED_PORT    GPIOA
 #define LED_PIN     PIN15
+#define KEY_PORT    GPIOA
+#define KEY_PIN		PIN14
+#define KEY_PUSH_STATUE 0
 
 void led_init(void)
 {
@@ -39,6 +42,16 @@ void led_on(void)
 void led_off(void)
 {
     GPIO_ClrBit(LED_PORT, LED_PIN);
+}
+
+void key_init(void)
+{
+	GPIO_Init(KEY_PORT, KEY_PIN, 0, 1, 0, 0);
+}
+
+bool key_is_push(void)
+{
+	return GPIO_GetBit(KEY_PORT, KEY_PIN) == KEY_PUSH_STATUE;
 }
 
 void uart0_init(void)
