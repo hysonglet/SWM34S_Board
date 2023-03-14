@@ -22,7 +22,7 @@ void led_off(void);
 void key_init(void);
 bool key_is_push(void);
 void uart0_init(void);
-
+void sdram_init(void);
 
 #ifdef __cplusplus
 }
