@@ -186,3 +186,83 @@ void sdram_init(void)
 	SDRAM_InitStruct.TimeTRFC  = SDRAM_TRFC_7;
 	SDRAM_Init(&SDRAM_InitStruct);
 }
+
+#define LCD_BL_PORT		GPIOB
+#define LCD_BL_PIN      PIN13
+
+void rgb_lcd_init(uint32_t *lcd_buff, uint16_t width, uint16_t height)
+{
+	LCD_InitStructure LCD_initStruct;
+	
+	/* lcd背光 */
+	GPIO_Init(LCD_BL_PORT, LCD_BL_PIN, 1, 1, 0, 0);		//屏幕背光
+	GPIO_SetBit(LCD_BL_PORT, LCD_BL_PIN);
+	
+	delay_ms(50);
+
+	// R- 5 bit : [ 3 ~ 7 ]
+//	PORT_Init(PORTC, PIN4, PORTC_PIN4_LCD_R0, 0);
+//	PORT_Init(PORTC, PIN5, PORTC_PIN5_LCD_R1, 0);
+//	PORT_Init(PORTC, PIN8, PORTC_PIN8_LCD_R2, 0);
+    PORT_Init(PORTC, PIN9, PORTC_PIN9_LCD_R3, 0);
+    PORT_Init(PORTC, PIN10, PORTC_PIN10_LCD_R4, 0);
+    PORT_Init(PORTC, PIN11, PORTC_PIN11_LCD_R5, 0);
+    PORT_Init(PORTC, PIN12, PORTC_PIN12_LCD_R6, 0);
+    PORT_Init(PORTC, PIN13, PORTC_PIN13_LCD_R7, 0);
+
+    // G- 6 bit : [ 2 ~ 7 ]
+//	PORT_Init(PORTA, PIN12, PORTA_PIN12_LCD_G0, 0);
+//	PORT_Init(PORTA, PIN13, PORTA_PIN13_LCD_G1, 0);
+    PORT_Init(PORTA, PIN14, PORTA_PIN14_LCD_G2, 0);
+    PORT_Init(PORTA, PIN15, PORTA_PIN15_LCD_G3, 0);
+    PORT_Init(PORTC, PIN0, PORTC_PIN0_LCD_G4, 0);
+    PORT_Init(PORTC, PIN1, PORTC_PIN1_LCD_G5, 0);
+    PORT_Init(PORTC, PIN2, PORTC_PIN2_LCD_G6, 0);
+    PORT_Init(PORTC, PIN3, PORTC_PIN3_LCD_G7, 0);
+
+    // B- 5 bit : [ 3 ~ 7 ]
+//	PORT_Init(PORTB, PIN1, PORTB_PIN1_LCD_B0, 0);
+//	PORT_Init(PORTB, PIN11, PORTB_PIN11_LCD_B1, 0);
+//	PORT_Init(PORTB, PIN13, PORTB_PIN13_LCD_B2, 0);
+    PORT_Init(PORTB, PIN15, PORTB_PIN15_LCD_B3, 0);
+    PORT_Init(PORTA, PIN2, PORTA_PIN2_LCD_B4, 0);
+    PORT_Init(PORTA, PIN9, PORTA_PIN9_LCD_B5, 0);
+    PORT_Init(PORTA, PIN10, PORTA_PIN10_LCD_B6, 0);
+    PORT_Init(PORTA, PIN11, PORTA_PIN11_LCD_B7, 0);
+
+    // VS / HS / DE / CLK
+    PORT_Init(PORTB, PIN2, PORTB_PIN2_LCD_VSYNC, 0);
+    PORT_Init(PORTB, PIN3, PORTB_PIN3_LCD_HSYNC, 0);
+    PORT_Init(PORTB, PIN4, PORTB_PIN4_LCD_DEN, 0);
+    PORT_Init(PORTB, PIN5, PORTB_PIN5_LCD_DCLK, 0);
+	
+	/* JLT4303B-PSS */
+	LCD_initStruct.ClkDiv = 5;
+	LCD_initStruct.Format = LCD_FMT_RGB565;
+	LCD_initStruct.HnPixel = width;
+	LCD_initStruct.VnPixel = height;
+	LCD_initStruct.Hfp = 5;
+	LCD_initStruct.Hbp = 40;
+	LCD_initStruct.Vfp = 8;
+	LCD_initStruct.Vbp = 8;
+	LCD_initStruct.HsyncWidth = 5; 
+	LCD_initStruct.VsyncWidth = 5; 
+	LCD_initStruct.DataSource = (uint32_t)lcd_buff;
+	LCD_initStruct.Background = 0xFFFFFF;
+	LCD_initStruct.SampleEdge = LCD_SAMPLE_FALL;
+	LCD_initStruct.IntEOTEn = 0;
+
+	LCD_Init(LCD, &LCD_initStruct);
+
+	LCD_Start(LCD);
+}
+
+//开启该中断可以给用户提供接口,以测试最真实的帧率
+void LCD_Handler(void)
+{
+    LCD_INTClr(LCD);
+    LCD_Start(LCD);
+	/*两次帧中断的间隔用时,即为帧率 */
+	//uint32_t frame_ms = systick_over - systick_start;
+}
+
