@@ -6,16 +6,18 @@
 #include <stdarg.h>
 
 #if (F_CPU == 150000000)
-#define DELAY_MS_CNT   0xfffff1U
+#define DELAY_MS_CNT   0x4000U
 #else
-#define DELAY_MS_CNT   0xfffff1UL
+#define DELAY_MS_CNT   0x4189UL
 #warning "The main frequency of the mcu is temporarily not adapted"
 #endif
 
 void delay_ms(uint32_t ms)
 {
-    volatile uint32_t cnt = DELAY_MS_CNT;
-    while(cnt--);
+	while (ms--){
+    	volatile uint32_t cnt = DELAY_MS_CNT;
+    	while(cnt--);
+	}
 }
 
 #define LED_PORT    GPIOA
@@ -237,7 +239,7 @@ void rgb_lcd_init(uint32_t *lcd_buff, uint16_t width, uint16_t height)
     PORT_Init(PORTB, PIN5, PORTB_PIN5_LCD_DCLK, 0);
 	
 	/* JLT4303B-PSS */
-	LCD_initStruct.ClkDiv = 5;
+	LCD_initStruct.ClkDiv = 10;
 	LCD_initStruct.Format = LCD_FMT_RGB565;
 	LCD_initStruct.HnPixel = width;
 	LCD_initStruct.VnPixel = height;
@@ -266,3 +268,9 @@ void LCD_Handler(void)
 	//uint32_t frame_ms = systick_over - systick_start;
 }
 
+inline void lcd_pixel_set_565(uint32_t lcd_buff_addr, uint16_t x, uint16_t y, uint16_t pix)
+{
+	uint16_t *lcd;
+	lcd = (uint16_t *)lcd_buff_addr;
+	lcd[LCD_WIDTH*y + x] = pix;
+}

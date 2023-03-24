@@ -6,5 +6,6 @@
 #include <stdbool.h>
 
 
+#include <SWM341.h>
 
 #endif
