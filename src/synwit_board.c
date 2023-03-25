@@ -274,3 +274,40 @@ inline void lcd_pixel_set_565(uint32_t lcd_buff_addr, uint16_t x, uint16_t y, ui
 	lcd = (uint16_t *)lcd_buff_addr;
 	lcd[LCD_WIDTH*y + x] = pix;
 }
+
+void rtc_init(uint16_t year, uint8_t month, uint8_t date, 
+				uint8_t hour, uint8_t minute, uint8_t second,
+				bool second_ie, bool minute_en)
+{
+	RTC_InitStructure RTC_initStruct;
+	RTC_initStruct.clksrc = RTC_CLKSRC_LRC32K;
+	RTC_initStruct.Year = year;
+	RTC_initStruct.Month = month;
+	RTC_initStruct.Date = date;
+	RTC_initStruct.Hour = hour;
+	RTC_initStruct.Minute = minute;
+	RTC_initStruct.Second = second;
+	RTC_initStruct.SecondIEn = (uint8_t)second_ie;
+	RTC_initStruct.MinuteIEn = (uint8_t)minute_en;
+	RTC_Stop(RTC);
+	RTC_Init(RTC, &RTC_initStruct);
+	RTC_Start(RTC);
+}
+
+void rtc_alarm_init(uint8_t alarm_day_mask, uint8_t hour, uint8_t minute, 
+					uint8_t second, bool alarm_ie)
+{
+	RTC_AlarmStructure alarmStruct;
+	alarmStruct.Days = alarm_day_mask;
+	alarmStruct.Hour = hour;
+	alarmStruct.Minute = minute;
+	alarmStruct.Second = second;
+	alarmStruct.AlarmIEn = (uint8_t)alarm_ie;
+	
+	RTC_AlarmSetup(RTC, &alarmStruct);
+}
+
+void rtc_datetime_get(RTC_DateTime * dateTime)
+{
+	RTC_GetDateTime(RTC, dateTime);
+}
