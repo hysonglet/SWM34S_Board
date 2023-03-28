@@ -22,7 +22,17 @@ extern "C" {
 #define LCD_BL_PORT		GPIOB
 #define LCD_BL_PIN      PIN13
 
-
+#define SPI0_CS_PORT	GPIOM
+#define SPI0_CS_PIN		PIN3
+#define SPI0_SCLK_PORT	PORTM
+#define SPI0_SCLK_PIN	PIN2
+#define SPI0_SCLK_FUN   PORTM_PIN2_SPI0_SCLK
+#define SPI0_MISO_PORT	PORTM
+#define SPI0_MISO_PIN	PIN4
+#define SPI0_MISO_FUN   PORTM_PIN4_SPI0_MISO
+#define SPI0_MOSI_PORT	PORTM
+#define SPI0_MOSI_PIN	PIN5
+#define SPI0_MOSI_FUN   PORTM_PIN5_SPI0_MOSI
 
 void delay_ms(uint32_t ms);
 
@@ -42,7 +52,10 @@ void rtc_init(uint16_t year, uint8_t month, uint8_t date,
 void rtc_alarm_init(uint8_t alarm_day_mask, uint8_t hour, uint8_t minute, 
 					uint8_t second, bool alarm_ie);
 void rtc_datetime_get(RTC_DateTime * dateTime);
-
+void spi0_init(void);
+void spi0_cs_en(bool en);
+void spi0_write_bytes(uint8_t *buff, size_t len);
+size_t spi0_read_bytes(uint8_t *buff, size_t len, uint32_t timeout_ms);
 #define LCD_WIDTH               480
 #define LCD_HEIGHT              272
 #define LCD_BUFF_ADDR           SDRAMM_BASE   

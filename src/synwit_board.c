@@ -303,3 +303,67 @@ void rtc_datetime_get(RTC_DateTime * dateTime)
 {
 	RTC_GetDateTime(RTC, dateTime);
 }
+
+void spi0_init(void)
+{
+	GPIO_Init(SPI0_CS_PORT, SPI0_CS_PIN, 1, 0, 0, 0);
+	spi0_cs_en(false);
+
+	PORT_Init(SPI0_SCLK_PORT, SPI0_SCLK_PIN, SPI0_SCLK_FUN, 0);
+	PORT_Init(SPI0_MISO_PORT, SPI0_MISO_PIN, SPI0_MISO_FUN, 1);
+	PORT_Init(SPI0_MOSI_PORT, SPI0_MOSI_PIN, SPI0_MOSI_FUN, 0);
+	
+	SPI_InitStructure SPI_initStruct;
+	SPI_initStruct.clkDiv = SPI_CLKDIV_32;
+	SPI_initStruct.FrameFormat = SPI_FORMAT_SPI;
+	SPI_initStruct.SampleEdge = SPI_SECOND_EDGE;
+	SPI_initStruct.IdleLevel = SPI_HIGH_LEVEL;
+	SPI_initStruct.WordSize = 8;
+	SPI_initStruct.Master = 1;
+	SPI_initStruct.RXThreshold = 0;
+	SPI_initStruct.RXThresholdIEn = 0;
+	SPI_initStruct.TXThreshold = 0;
+	SPI_initStruct.TXThresholdIEn = 0;
+	SPI_initStruct.TXCompleteIEn = 0;
+	SPI_Init(SPI0, &SPI_initStruct);
+	SPI_Open(SPI0);
+}
+void spi0_cs_en(bool en)
+{
+	if(en){
+		GPIO_ClrBit(SPI0_CS_PORT, SPI0_CS_PIN);
+	}
+	else{
+		GPIO_SetBit(SPI0_CS_PORT, SPI0_CS_PIN);
+	}
+}
+void spi0_write_bytes(uint8_t *buff, size_t len)
+{
+	spi0_cs_en(true);
+	for(size_t i = 0; i < len; i++){
+		SPI_WriteWithWait(SPI0, (uint32_t)buff[i]);
+	}
+	spi0_cs_en(false);
+}
+
+size_t spi0_read_bytes(uint8_t *buff, size_t len, uint32_t timeout_ms)
+{
+	size_t cnt = 0;
+	uint32_t tm = 0;
+
+	do{
+		if(SPI_IsRXEmpty(SPI0)){
+			if(tm++ < timeout_ms){
+				delay_ms(1);
+				continue;
+			}
+			else{
+				break;
+			}
+		}
+		buff[cnt++] = SPI_Read(SPI0);
+		tm = 0;
+	}while(cnt < len);
+	
+	return cnt;
+}
