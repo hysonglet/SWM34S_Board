@@ -12,6 +12,18 @@ extern "C" {
 #define F_CPU       150000000UL
 #endif
 
+
+#define LED_PORT    GPIOA
+#define LED_PIN     PIN15
+#define KEY_PORT    GPIOA
+#define KEY_PIN		PIN14
+#define KEY_PUSH_STATUE 0
+
+#define LCD_BL_PORT		GPIOB
+#define LCD_BL_PIN      PIN13
+
+
+
 void delay_ms(uint32_t ms);
 
 void led_init(void);
@@ -35,6 +47,8 @@ void rtc_datetime_get(RTC_DateTime * dateTime);
 #define LCD_HEIGHT              272
 #define LCD_BUFF_ADDR           SDRAMM_BASE   
 #define SDRAM_MEM_SIZE          (8*1024*1024)   
+
+
 
 #ifdef __cplusplus
 }

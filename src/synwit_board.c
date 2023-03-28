@@ -18,14 +18,8 @@ void delay_ms(uint32_t ms)
     	volatile uint32_t cnt = DELAY_MS_CNT;
     	while(cnt--);
 	}
+
 }
-
-#define LED_PORT    GPIOA
-#define LED_PIN     PIN15
-#define KEY_PORT    GPIOA
-#define KEY_PIN		PIN14
-#define KEY_PUSH_STATUE 0
-
 void led_init(void)
 {
     GPIO_Init(LED_PORT, LED_PIN, 1, 1, 0, 0);
@@ -189,8 +183,6 @@ void sdram_init(void)
 	SDRAM_Init(&SDRAM_InitStruct);
 }
 
-#define LCD_BL_PORT		GPIOB
-#define LCD_BL_PIN      PIN13
 
 void rgb_lcd_init(uint32_t *lcd_buff, uint16_t width, uint16_t height)
 {
