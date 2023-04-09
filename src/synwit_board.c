@@ -367,3 +367,41 @@ size_t spi0_read_bytes(uint8_t *buff, size_t len, uint32_t timeout_ms)
 	
 	return cnt;
 }
+
+bool sdcard_init(int freq)
+{
+	PORT_Init(PORTM, PIN2, PORTM_PIN2_SD_CLK, 0);
+	PORT_Init(PORTM, PIN4, PORTM_PIN4_SD_CMD, 1);
+	PORT_Init(PORTM, PIN5, PORTM_PIN5_SD_D0,  1);
+	PORT_Init(PORTM, PIN6, PORTM_PIN6_SD_D1,  1);
+	PORT_Init(PORTN, PIN0, PORTN_PIN0_SD_D2,  1);
+	PORT_Init(PORTN, PIN1, PORTN_PIN1_SD_D3,  1);
+
+	return (SD_RES_OK == SDIO_Init(freq));
+}
+
+bool sdcard_disk_read(uint8_t *buff, size_t cnt, size_t sector)
+{
+	if(cnt == 1){
+		return SD_RES_OK == SDIO_BlockRead(sector, (uint32_t *)buff);
+	}
+	else{
+		return SD_RES_OK == SDIO_MultiBlockRead(sector, cnt, (uint32_t *)buff);
+	}
+}
+
+bool sdcard_disk_write(uint8_t *buff, size_t cnt, size_t sector)
+{
+	if(cnt == 1){
+		return SD_RES_OK == SDIO_BlockWrite(sector, (uint32_t *)buff);
+	}
+	else{
+		return SD_RES_OK == SDIO_MultiBlockWrite(sector, cnt, (uint32_t *)buff);
+	}
+}
+
+bool sdcard_is_initialized(void)
+{
+	extern SD_CardInfo SD_cardInfo;
+	return SD_cardInfo.CardCapacity != 0;
+}

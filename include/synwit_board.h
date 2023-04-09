@@ -63,6 +63,11 @@ size_t spi0_read_bytes(uint8_t *buff, size_t len, uint32_t timeout_ms);
 
 
 
+bool sdcard_init(int freq);
+bool sdcard_disk_read(uint8_t *buff, size_t cnt, size_t sector);
+bool sdcard_disk_write(uint8_t *buff, size_t cnt, size_t sector);
+bool sdcard_is_initialized(void);
+
 #ifdef __cplusplus
 }
 #endif
